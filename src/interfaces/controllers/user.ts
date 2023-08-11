@@ -1,17 +1,21 @@
 import { Request, Response } from "express";
 import { createUser } from "../../usecases/user/createUser";
-import { UserInterface } from "../../entities/user";
 
 
 export const userSignup = async(req:Request,res:Response) => {
     try {
+        
         const userData = req.body;
-        const partialUserData: Partial<UserInterface> = userData;
 
-         if (partialUserData.username && partialUserData.email && partialUserData.phone && partialUserData.password){
-             const user = await createUser(userData);
-             res.status(201).json({ message: "User created successfully", user });
-         }
+        if (!userData.username || !userData.email || !userData.phone || !userData.password) {
+            return res.status(401).json({ message: "Enter all details" });
+        }
+
+        
+        const user = await createUser(userData);
+        console.log(user);
+        
+        res.status(201).json({ user });
 
     } catch (error) {
         console.log(error);
